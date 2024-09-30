@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"os"
 	"strings"
@@ -24,7 +23,7 @@ func main() {
 	}
 
 	// конкатенируем
-	var result bytes.Buffer
+	var result strings.Builder
 	for i := range strs {
 		result.WriteString(strs[i])
 		if i != len(strs)-1 {
