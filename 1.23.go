@@ -17,5 +17,6 @@ func main() {
 
 	tmp := arr[:i]
 	tmp = append(tmp, arr[i+1:]...)
+	// tmp = append(tmp[:i], tmp[i+1:]...)
 	fmt.Println(tmp)
 }
