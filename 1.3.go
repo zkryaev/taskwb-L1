@@ -6,24 +6,31 @@ import (
 )
 
 func main() {
-	nums := []int{2, 4, 6, 8, 10}
+	a := []int{2, 4, 6, 8, 10}
 
-	pows := make(chan int, len(nums))
-	pows <- 0
-	wg := sync.WaitGroup{}
-	for i := 0; i < len(nums); i++ {
-		wg.Add(1)
-		go func(n int) {
-			defer wg.Done()
-			a := <-pows
-			pows <- a + (n * n)
-		}(nums[i])
-	}
+	res := make(chan int)
+	go func() {
+		wg := &sync.WaitGroup{}
+		wg.Add(len(a))
+		for i := 0; i < len(a); i++ {
+			go func(i int) {
+				defer wg.Done()
+				res <- a[i] * a[i]
+			}(i)
+		}
+		wg.Wait()
+		close(res) 
+	}()
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	go func() { 
+		var sum int
+		defer wg.Done()
+		for r := range res { 
+			sum += r
+		}
+		fmt.Println(sum)
+	}()
 	wg.Wait()
-
-	close(pows)
-	for v := range pows {
-		fmt.Print(v, " ")
-	}
-	fmt.Println()
 }
